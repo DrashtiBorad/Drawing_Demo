@@ -1,10 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import "hplx-react-elements-dev/dist/esm/index.css";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import WebFont from "webfontloader";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+WebFont.load({
+  google: {
+    families: ["Inter:400,500,600,700&display=swap"],
+  },
+});
+
 root.render(
   <React.StrictMode>
     <App />
