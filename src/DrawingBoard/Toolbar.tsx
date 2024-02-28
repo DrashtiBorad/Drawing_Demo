@@ -7,6 +7,8 @@ const Toolbar = ({
   updateToolConfig,
   onAttachmentChange,
   onCreateNewPage,
+  disableAttachmentUpload,
+  onExport,
 }: any) => {
   const updateTools = (key, value) =>
     updateToolConfig({ ...toolsConfig, [key]: value });
@@ -14,23 +16,33 @@ const Toolbar = ({
   return (
     <div className="mfev-absolute mfev-top-2.5 mfev-gap-2 mfev-right-2 mfev-flex mfev-items-center mfev-z-[1]">
       <div className="mfev-flex mfev-items-center mfev-bg-White mfev-rounded-md mfev-border mfev-border-solid mfev-border-Gray-200 mfev-shadow-md mfev-px-2 mfev-py-1">
-        <div className="mfev-flex mfev-gap-1 mfev-items-center mfev-pr-2 mfev-border-r mfev-border-solid mfev-border-Gray-300">
-          <button onClick={() => updateTools("tool", "pen")}>Pen</button>
-          <button onClick={() => updateTools("tool", "eraser")}>Eraser</button>
+        <div className="mfev-flex mfev-gap-2 mfev-items-center mfev-pr-2 mfev-border-r mfev-border-solid mfev-border-Gray-300">
+          <button onClick={() => updateTools("tool", "pen")}>
+            <img src="/fountain-pen.svg" alt="pen" />
+          </button>
+          <button onClick={() => updateTools("tool", "eraser")}>
+            <img src="/eraser.svg" alt="pen" />
+          </button>
         </div>
-        <div className="mfev-flex mfev-gap-1.5 mfev-items-center mfev-px-2 mfev-h-6 mfev-border-r mfev-border-solid mfev-border-Gray-300">
+        <div className="mfev-flex mfev-gap-1 mfev-items-center mfev-px-2 mfev-h-6 mfev-border-r mfev-border-solid mfev-border-Gray-300">
           <button
-            className="mfev-rounded-[50%] mfev-h-[4px] mfev-w-[4px] mfev-bg-Gray-300"
+            className="mfev-px-[2px] mfev-py-[5px]"
             onClick={() => updateTools("size", 1)}
-          ></button>
+          >
+            <div className="mfev-rounded-[50%] mfev-h-[4px] mfev-w-[4px] mfev-bg-Gray-300" />
+          </button>
           <button
-            className="mfev-rounded-[50%] mfev-h-[6px] mfev-w-[6px] mfev-bg-Gray-300"
+            className="mfev-px-[2px] mfev-py-[5px]"
             onClick={() => updateTools("size", 2)}
-          ></button>
+          >
+            <div className="mfev-rounded-[50%] mfev-h-[6px] mfev-w-[6px] mfev-bg-Gray-300" />
+          </button>
           <button
-            className="mfev-rounded-[50%] mfev-h-[10px] mfev-w-[10px] mfev-bg-Gray-300"
-            onClick={() => updateTools("size", 3)}
-          />
+            className="mfev-px-[2px] mfev-py-[5px]"
+            onClick={() => updateTools("size", 4)}
+          >
+            <div className="mfev-rounded-[50%] mfev-h-[10px] mfev-w-[10px] mfev-bg-Gray-300" />
+          </button>
         </div>
         <div className="mfev-flex mfev-gap-1.5 mfev-items-center mfev-pl-2">
           <button
@@ -52,7 +64,14 @@ const Toolbar = ({
         </div>
       </div>
       <div>
-        <label className="mfev-block mfev-cursor-pointer mfev-bg-White mfev-px-2 mfev-py-[6px] mfev-font-inter-1 mfev-text-1 mfev-border mfev-border-solid mfev-border-Gray-200 mfev-shadow-md mfev-rounded-md">
+        <label
+          aria-disabled={disableAttachmentUpload}
+          className={`${
+            disableAttachmentUpload
+              ? "mfev-bg-Gray-100 mfev-cursor-not-allowed"
+              : "mfev-bg-White mfev-cursor-pointer"
+          } mfev-block mfev-px-2 mfev-py-[6px] mfev-font-inter-1 mfev-text-1 mfev-border mfev-border-solid mfev-border-Gray-200 mfev-shadow-md mfev-rounded-md`}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="18"
@@ -70,6 +89,7 @@ const Toolbar = ({
             type="file"
             onChange={onAttachmentChange}
             accept="image/*"
+            disabled={disableAttachmentUpload}
           />
         </label>
       </div>
@@ -78,6 +98,12 @@ const Toolbar = ({
         size="sm"
         hierarchy="Secondary-Grey"
         onClick={onCreateNewPage}
+      />
+      <Button
+        textField="Download"
+        size="sm"
+        hierarchy="Secondary-Grey"
+        onClick={onExport}
       />
     </div>
   );

@@ -105,12 +105,6 @@ const ResizableImage = ({
         <>
           <Transformer
             ref={trRef}
-            // boundBoxFunc={(oldBox, newBox) =>
-            //   newBox.width < IMAGE_RESIZE_LIMIT ||
-            //   newBox.height < IMAGE_RESIZE_LIMIT
-            //     ? oldBox
-            //     : newBox
-            // }
             boundBoxFunc={boundBoxFunc}
             rotateEnabled={false}
             anchorCornerRadius={4}

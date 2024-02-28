@@ -4,7 +4,12 @@ import usePreventTouchScroll from "./hooks/usePreventTouchScroll";
 import { Layer, Line, Stage } from "react-konva";
 import { CANVAS_HEIGHT, CANVAS_WIDTH, PREV_CANVAS_IAMGE_ID } from "./constants";
 import ImageFromLink from "./ImageFromLink";
-import { bgImageURL, getBase64, handleImageResize } from "./helper";
+import {
+  bgImageURL,
+  downloadURI,
+  getBase64,
+  handleImageResize,
+} from "./helper";
 import ResizableImage from "./ResizableImage";
 
 const DrawingBoard = () => {
@@ -17,15 +22,6 @@ const DrawingBoard = () => {
   });
   const [isAttachmentSelected, setIsAttachmentSelected] = useState(false);
   const [attachmentInfo, setAttachmentInfo] = useState(null);
-
-  // const [attachmentInfo, setAttachmentInfo] = useState({
-  //   x: 100,
-  //   y: 100,
-  //   width: 100,
-  //   height: 100,
-  //   id: "rect1",
-  //   imageLink: "https://konvajs.org/assets/lion.png",
-  // });
 
   // Refs
   const isDrawing = useRef(false);
@@ -57,9 +53,10 @@ const DrawingBoard = () => {
     if (canDeSelectTheShape) setIsAttachmentSelected(false);
 
     // true will draw dot on click of canvas (only onClick and onTap)
-    let points = canDeSelectTheShape
-      ? [pos.x, pos.y, pos.x, pos.y]
-      : [pos.x, pos.y];
+    // let points = canDeSelectTheShape
+    //   ? [pos.x, pos.y, pos.x, pos.y]
+    //   : [pos.x, pos.y];
+    let points = [pos.x, pos.y, pos.x, pos.y];
 
     setLines([...lines, { points, ...toolsConfig }]);
   };
@@ -133,12 +130,30 @@ const DrawingBoard = () => {
       });
 
       setIsAttachmentSelected(true);
+      e.target.value = "";
     } catch (error) {
       console.log("Error in onAttachmentChange", error);
     }
   };
 
   const onCreateNewPage = () => {};
+
+  const onExport = async () => {
+    if (!attachmentInfo && !prevCanvasLink && !lines.length) {
+      alert("cannot download empty canvas");
+      return;
+    }
+
+    // remove the selected shape and await for some time to update the ref's value
+    setIsAttachmentSelected(false);
+    await new Promise((res) => setTimeout(() => res(""), 100));
+
+    // stageRef.current?.findOne(".transparentBackground").show();
+    const uri = stageRef.current.toDataURL();
+    console.log({ uri });
+    downloadURI(uri, "canvas.png");
+    // stageRef.current?.findOne(".transparentBackground").hide();
+  };
 
   /// Methods - END ///
 
@@ -148,7 +163,7 @@ const DrawingBoard = () => {
       <div
         className="mfev-relative"
         style={{
-          maxWidth: "750px",
+          maxWidth: CANVAS_WIDTH + "px",
           width: "100%",
           margin: "10px",
         }}
@@ -158,6 +173,8 @@ const DrawingBoard = () => {
           updateToolConfig={updateToolConfig}
           onAttachmentChange={onAttachmentChange}
           onCreateNewPage={onCreateNewPage}
+          disableAttachmentUpload={!!attachmentInfo}
+          onExport={onExport}
         />
 
         <div
@@ -174,6 +191,7 @@ const DrawingBoard = () => {
             width={CANVAS_WIDTH}
             height={CANVAS_HEIGHT}
             onMouseDown={handleMouseDown}
+            onTap={handleMouseDown}
             onMousemove={handleMouseMove}
             onMouseup={handleMouseUp}
             onTouchStart={handleMouseDown}
@@ -196,9 +214,7 @@ const DrawingBoard = () => {
                   onSelect={() => setIsAttachmentSelected(true)}
                   onChange={setAttachmentInfo}
                   onDelete={onAttachmentDelete}
-                  isSelected={
-                    isAttachmentSelected && toolsConfig.tool !== "eraser"
-                  }
+                  isSelected={isAttachmentSelected}
                 />
               )}
 
